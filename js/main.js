@@ -52,4 +52,69 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   countTimer('2021-02-26');
+
+  // menu
+
+  const btnMenu = document.querySelector('.menu'),
+    menu = document.querySelector('menu'),
+    closeBtn = document.querySelector('.close-btn'),
+    menuItems = menu.querySelectorAll('ul>li');
+
+  const handlerMenu = () => {
+    menu.classList.toggle('active-menu');
+  };
+
+  btnMenu.addEventListener('click', handlerMenu);
+  closeBtn.addEventListener('click', handlerMenu);
+  menuItems.forEach(element => {
+    element.addEventListener('click', handlerMenu);
+  });
+
+  // popup
+
+  const togglePopUp = () => {
+    const popup = document.querySelector('.popup'),
+      popupBtn = document.querySelectorAll('.popup-btn'),
+      popUpClose = document.querySelector('.popup-close');
+
+    let counter = 0;
+
+    function appearAnimation() {
+      const popupWindow = this.querySelector('div');
+
+      this.style.display = 'block';
+      popupWindow.style.transform = 'scale(0)';
+
+      if (screen.width >= 768) {
+
+        counter += 5;
+        console.log(counter);
+        popupWindow.style.transform = `scale(${counter}%)`;
+
+        if (counter < 100) {
+          setTimeout(appearAnimation.bind(this), 1);
+        }
+
+      } else {
+
+        popupWindow.style.transform = 'scale(100%)';
+
+      }
+    }
+
+    function disappearAnimation() {
+      popup.style.display = 'none';
+      counter = 0;
+    }
+
+    popupBtn.forEach(element => {
+      element.addEventListener('click', appearAnimation.bind(popup));
+    });
+
+    popUpClose.addEventListener('click', disappearAnimation);
+
+  };
+
+  togglePopUp();
+
 });
