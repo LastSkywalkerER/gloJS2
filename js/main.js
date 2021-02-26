@@ -54,21 +54,33 @@ window.addEventListener('DOMContentLoaded', () => {
   countTimer('2021-03-01');
 
   // menu
+  const toggleMenu = () => {
+    const btnMenu = document.querySelector('.menu'),
+      menu = document.querySelector('menu'),
+      closeBtn = document.querySelector('.close-btn'),
+      menuItems = menu.querySelectorAll('ul>li');
 
-  const btnMenu = document.querySelector('.menu'),
-    menu = document.querySelector('menu'),
-    closeBtn = document.querySelector('.close-btn'),
-    menuItems = menu.querySelectorAll('ul>li');
+    const handlerMenu = () => {
+        menu.classList.toggle('active-menu');
+      },
+      searchCloseElement = (event) => {
+        const target = event.target;
+        if (target === closeBtn || target.closest(menuItems.classList) || target !== menu) {
+          handlerMenu();
+          menu.removeEventListener('click', searchCloseElement);
+        }
+      }
 
-  const handlerMenu = () => {
-    menu.classList.toggle('active-menu');
-  };
+    btnMenu.addEventListener('click', () => {
+      menu.addEventListener('click', searchCloseElement);
+      handlerMenu();
+    });
+    // closeBtn.addEventListener('click', handlerMenu);
+    // menuItems.forEach(element => {
+    //   element.addEventListener('click', handlerMenu);
+  }
 
-  btnMenu.addEventListener('click', handlerMenu);
-  closeBtn.addEventListener('click', handlerMenu);
-  menuItems.forEach(element => {
-    element.addEventListener('click', handlerMenu);
-  });
+  toggleMenu();
 
   // popup
 
@@ -88,7 +100,6 @@ window.addEventListener('DOMContentLoaded', () => {
       if (screen.width >= 768) {
 
         counter += 5;
-        console.log(counter);
         popupWindow.style.transform = `scale(${counter}%)`;
 
         if (counter < 100) {
@@ -111,7 +122,11 @@ window.addEventListener('DOMContentLoaded', () => {
       element.addEventListener('click', appearAnimation.bind(popup));
     });
 
-    popUpClose.addEventListener('click', disappearAnimation);
+    popup.addEventListener('click', (event) => {
+      if (event.target === popup || event.target === popUpClose) {
+        disappearAnimation();
+      }
+    })
 
   };
 
