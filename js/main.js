@@ -94,11 +94,11 @@ window.addEventListener('DOMContentLoaded', () => {
           setTimeout(appearAnimation.bind(this), 1);
         }
 
-      } else {
-
-        popupWindow.style.transform = 'scale(100%)';
-
       }
+
+      popupWindow.style.transform = 'scale(100%)';
+
+
     }
 
     function disappearAnimation() {
