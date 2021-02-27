@@ -88,17 +88,17 @@ window.addEventListener('DOMContentLoaded', () => {
       if (document.documentElement.clientWidth >= 768) {
 
         counter += 5;
-        popupWindow.style.transform = `scale(${counter}%)`;
+        popupWindow.style.transform = `scale(${counter/100})`;
 
         if (counter < 100) {
           setTimeout(appearAnimation.bind(this), 1);
         }
 
+      } else {
+
+        popupWindow.style.transform = 'scale(1)';
+
       }
-
-      popupWindow.style.transform = 'scale(100%)';
-
-
     }
 
     function disappearAnimation() {
