@@ -85,10 +85,9 @@ window.addEventListener('DOMContentLoaded', () => {
       this.style.display = 'block';
       popupWindow.style.transform = 'scale(0)';
 
-      if (screen.width >= 768) {
+      if (document.documentElement.clientWidth >= 768) {
 
         counter += 5;
-        console.log(counter);
         popupWindow.style.transform = `scale(${counter}%)`;
 
         if (counter < 100) {
