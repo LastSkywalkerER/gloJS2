@@ -97,10 +97,10 @@ window.addEventListener('DOMContentLoaded', () => {
       this.style.display = 'block';
       popupWindow.style.transform = 'scale(0)';
 
-      if (screen.width >= 768) {
+      if (document.documentElement.clientWidth >= 768) {
 
         counter += 5;
-        popupWindow.style.transform = `scale(${counter}%)`;
+        popupWindow.style.transform = `scale(${counter/100})`;
 
         if (counter < 100) {
           setTimeout(appearAnimation.bind(this), 1);
@@ -108,7 +108,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
       } else {
 
-        popupWindow.style.transform = 'scale(100%)';
+        popupWindow.style.transform = 'scale(1)';
 
       }
     }
