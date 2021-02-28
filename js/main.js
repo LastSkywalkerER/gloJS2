@@ -53,32 +53,54 @@ window.addEventListener('DOMContentLoaded', () => {
 
   countTimer('2021-03-01');
 
-  // menu
+  // menu переключает видимость меню на кнопку/элементы меню
+
   const toggleMenu = () => {
     const btnMenu = document.querySelector('.menu'),
       menu = document.querySelector('menu'),
       closeBtn = document.querySelector('.close-btn'),
-      menuItems = menu.querySelectorAll('ul>li');
+      menuItem = menu.querySelector('ul>li>a');
+
+    let isOpen = false;
 
     const handlerMenu = () => {
-        menu.classList.toggle('active-menu');
-      },
-      searchCloseElement = (event) => {
-        const target = event.target;
-        if (target === closeBtn || target.closest(menuItems.classList) || target !== menu) {
+      menu.classList.toggle('active-menu');
+    };
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+
+      const btn = target.closest('.' + btnMenu.classList);
+      const menuElem = target.closest(menu.tagName);
+      const close = target.closest('.' + closeBtn.classList);
+      const li = target.closest(menuItem.tagName);
+
+
+      if (isOpen) {
+        if (!menuElem) {
+          console.log(isOpen);
           handlerMenu();
-          menu.removeEventListener('click', searchCloseElement);
+          isOpen = false;
+          return;
         }
       }
 
-    btnMenu.addEventListener('click', () => {
-      menu.addEventListener('click', searchCloseElement);
-      handlerMenu();
+      if (close || li) {
+        handlerMenu();
+        isOpen = false;
+        return;
+      }
+
+      if (btn) {
+        handlerMenu();
+        isOpen = !isOpen;
+        return;
+      }
+
+
     });
-    // closeBtn.addEventListener('click', handlerMenu);
-    // menuItems.forEach(element => {
-    //   element.addEventListener('click', handlerMenu);
-  }
+
+  };
 
   toggleMenu();
 
@@ -193,7 +215,8 @@ window.addEventListener('DOMContentLoaded', () => {
         link = link.getAttribute('href');
       }
       if (link) {
-        if (link[0] === '#') {
+        if (link[0] === '#' &&
+          link !== '#close') {
 
           event.preventDefault();
           smoothScroll(link);
