@@ -122,7 +122,7 @@ window.addEventListener('DOMContentLoaded', () => {
       element.addEventListener('click', appearAnimation.bind(popup));
     });
 
-    popup.addEventListener('click', (event) => {
+    popup.addEventListener('click', event => {
       if (event.target === popup || event.target === popUpClose) {
         disappearAnimation();
       }
@@ -139,7 +139,7 @@ window.addEventListener('DOMContentLoaded', () => {
       tab = tabHeader.querySelectorAll('.service-header-tab'),
       tabContent = document.querySelectorAll('.service-tab');
 
-    const toggleTabContent = (index) => {
+    const toggleTabContent = index => {
 
       for (let i = 0; i < tabContent.length; i++) {
         if (index === i) {
@@ -152,7 +152,7 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    tabHeader.addEventListener('click', (event) => {
+    tabHeader.addEventListener('click', event => {
       let target = event.target;
       target = target.closest('.service-header-tab');
 
@@ -180,7 +180,7 @@ window.addEventListener('DOMContentLoaded', () => {
       slidesAutoPlayTime = 3000;
 
     for (let i = 0; i < slide.length; i++) {
-      let dotElem = document.createElement('li');
+      const dotElem = document.createElement('li');
       dotElem.classList.add('dot');
       if (i === 0) {
         dotElem.classList.add('dot-active');
@@ -232,10 +232,10 @@ window.addEventListener('DOMContentLoaded', () => {
       clearInterval(interval);
     };
 
-    slider.addEventListener('click', (event) => {
+    slider.addEventListener('click', event => {
       event.preventDefault();
 
-      let target = event.target;
+      const target = event.target;
 
       if (!target.matches('.portfolio-btn, .dot')) {
         return;
@@ -260,7 +260,7 @@ window.addEventListener('DOMContentLoaded', () => {
       nextSlide(dot, currentSlide, 'dot-active');
     });
 
-    slider.addEventListener('mouseover', (event) => {
+    slider.addEventListener('mouseover', event => {
       if (event.target.matches('.portfolio-btn') || event.target.matches('.dot')) {
         stopSlide();
       }
@@ -299,7 +299,10 @@ window.addEventListener('DOMContentLoaded', () => {
     let onFocus = false;
 
     const checkBlur = event => {
-      console.log(event.target);
+      event.target.value = event.target.value.replace(/-+(?=-+)| +(?= +)|-+(?= +)| +(?=-+)|^ +| +$|^-+|-+$/ig, '');
+      if (event.target.name === 'user_name') {
+        event.target.value = event.target.value.split(' ').map(item => item[0].toUpperCase() + item.slice(1).toLowerCase()).join(' ');
+      }
       event.target.removeEventListener('blur', checkBlur);
       onFocus = !onFocus;
     };
@@ -322,7 +325,7 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
     const checkInputEmail = event => {
-      event.target.value = event.target.value.replace(/[^a-z@-_.!~*']/ig, '');
+      event.target.value = event.target.value.replace(/[^a-z@_.!~*'-]/ig, '');
       checkFocus(event);
     };
 
