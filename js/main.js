@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 window.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
@@ -7,6 +8,14 @@ window.addEventListener('DOMContentLoaded', () => {
     const timerHours = document.querySelector('#timer-hours'),
       timerMinutes = document.querySelector('#timer-minutes'),
       timerSeconds = document.querySelector('#timer-seconds');
+
+    function addZero(number) {
+      if (String(number).length === 1) {
+        return 0 + String(number);
+      } else {
+        return number;
+      }
+    }
 
     function getTimeRemaining() {
       const dateStop = new Date(deadline).getTime(),
@@ -22,14 +31,6 @@ window.addEventListener('DOMContentLoaded', () => {
         minutes,
         hours
       };
-    }
-
-    function addZero(number) {
-      if (String(number).length === 1) {
-        return 0 + String(number);
-      } else {
-        return number;
-      }
     }
 
     function updateClock() {
@@ -63,22 +64,19 @@ window.addEventListener('DOMContentLoaded', () => {
     const handlerMenu = () => {
         menu.classList.toggle('active-menu');
       },
-      searchCloseElement = (event) => {
+      searchCloseElement = event => {
         const target = event.target;
         if (target === closeBtn || target.closest(menuItems.classList) || target !== menu) {
           handlerMenu();
           menu.removeEventListener('click', searchCloseElement);
         }
-      }
+      };
 
     btnMenu.addEventListener('click', () => {
       menu.addEventListener('click', searchCloseElement);
       handlerMenu();
     });
-    // closeBtn.addEventListener('click', handlerMenu);
-    // menuItems.forEach(element => {
-    //   element.addEventListener('click', handlerMenu);
-  }
+  };
 
   toggleMenu();
 
@@ -100,7 +98,7 @@ window.addEventListener('DOMContentLoaded', () => {
       if (document.documentElement.clientWidth >= 768) {
 
         counter += 5;
-        popupWindow.style.transform = `scale(${counter/100})`;
+        popupWindow.style.transform = `scale(${counter / 100})`;
 
         if (counter < 100) {
           setTimeout(appearAnimation.bind(this), 1);
@@ -126,7 +124,7 @@ window.addEventListener('DOMContentLoaded', () => {
       if (event.target === popup || event.target === popUpClose) {
         disappearAnimation();
       }
-    })
+    });
 
   };
 
@@ -150,7 +148,7 @@ window.addEventListener('DOMContentLoaded', () => {
           tabContent[i].classList.add('d-none');
         }
       }
-    }
+    };
 
     tabHeader.addEventListener('click', event => {
       let target = event.target;
@@ -161,11 +159,11 @@ window.addEventListener('DOMContentLoaded', () => {
           if (item === target) {
             toggleTabContent(i);
           }
-        })
+        });
       }
-    })
+    });
 
-  }
+  };
 
   tabs();
 
@@ -266,7 +264,7 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    slider.addEventListener('mouseout', (event) => {
+    slider.addEventListener('mouseout', event => {
       if (event.target.matches('.portfolio-btn') || event.target.matches('.dot')) {
         startSlide();
       }
@@ -276,6 +274,8 @@ window.addEventListener('DOMContentLoaded', () => {
   };
 
   slider();
+
+  // подмена картинок при наведении
 
   const changeImage = () => {
     const imgs = document.querySelectorAll('.command__photo');
@@ -293,6 +293,8 @@ window.addEventListener('DOMContentLoaded', () => {
   };
 
   changeImage();
+
+  // валидация инпутов
 
   const validation = () => {
 
