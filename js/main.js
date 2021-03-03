@@ -304,7 +304,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const checkBlur = event => {
       event.target.value = event.target.value.replace(/-+(?=-+)| +(?= +)|-+(?= +)| +(?=-+)|^ +| +$|^-+|-+$/ig, '');
-      if (event.target.name === 'user_name') {
+      if (event.target.name === 'user_name' && event.target.value) {
         event.target.value = event.target.value.split(' ').map(item => item[0].toUpperCase() + item.slice(1).toLowerCase()).join(' ');
       }
       event.target.removeEventListener('blur', checkBlur);
@@ -334,7 +334,7 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
     const checkInputTel = event => {
-      event.target.value = event.target.value.replace(/[^\d()-]/ig, '');
+      event.target.value = event.target.value.replace(/[^\d-()+ ]/ig, '');
       checkFocus(event);
     };
 
