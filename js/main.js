@@ -1,3 +1,5 @@
+/* eslint-disable strict */
+/* eslint-disable eol-last */
 /* eslint-disable max-len */
 window.addEventListener('DOMContentLoaded', () => {
   'use strict';
