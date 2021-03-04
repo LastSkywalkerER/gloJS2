@@ -493,7 +493,8 @@ window.addEventListener('DOMContentLoaded', () => {
       loadMessage = 'Загрузка...',
       successMesage = 'Спасибо! Мы скоро с вами свяжемся';
 
-    const form = document.getElementById('form1');
+    const forms = [...document.querySelectorAll('.main-form')];
+    forms.push(document.querySelector('.footer-form'));
 
     const statusMessageStyle = document.createElement('style');
     statusMessageStyle.textContent = `
@@ -575,26 +576,28 @@ window.addEventListener('DOMContentLoaded', () => {
       request.send(JSON.stringify(body));
     });
 
-    form.addEventListener('submit', event => {
-      event.preventDefault();
-      form.append(statusMessage);
+    forms.forEach(form => {
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        form.insertAdjacentElement('beforeend', statusMessage);
 
-      // statusMessage.textContent = loadMessage;
-      const formData = new FormData(form);
-      let body = {};
-      formData.forEach((val, key) => {
-        body[key] = val;
+        // statusMessage.textContent = loadMessage;
+        const formData = new FormData(form);
+        const body = {};
+        formData.forEach((val, key) => {
+          body[key] = val;
+        });
+        postData(body, () => {
+            statusMessage.textContent = successMesage;
+            statusMessage.classList.remove('sk-wave');
+            // statusMessage.remove();
+          },
+          error => {
+            statusMessage.textContent = errorMessage;
+            console.error(error);
+          }
+        );
       });
-      postData(body, () => {
-          statusMessage.textContent = successMesage;
-          statusMessage.classList.remove('sk-wave');
-          // statusMessage.remove();
-        },
-        error => {
-          statusMessage.textContent = errorMessage;
-          console.error(error);
-        }
-      );
     });
 
   };
