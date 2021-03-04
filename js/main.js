@@ -56,27 +56,51 @@ window.addEventListener('DOMContentLoaded', () => {
 
   countTimer('2021-03-22');
 
-  // menu
+  // menu переключает видимость меню на кнопку/элементы меню
+
   const toggleMenu = () => {
     const btnMenu = document.querySelector('.menu'),
       menu = document.querySelector('menu'),
       closeBtn = document.querySelector('.close-btn'),
-      menuItems = menu.querySelectorAll('ul>li');
+      menuItem = menu.querySelector('ul>li>a');
+
+    let isOpen = false;
 
     const handlerMenu = () => {
-        menu.classList.toggle('active-menu');
-      },
-      searchCloseElement = event => {
-        const target = event.target;
-        if (target === closeBtn || target.closest(menuItems.classList) || target !== menu) {
+      menu.classList.toggle('active-menu');
+    };
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+
+      const btn = target.closest('.' + btnMenu.classList);
+      const menuElem = target.closest(menu.tagName);
+      const close = target.closest('.' + closeBtn.classList);
+      const li = target.closest(menuItem.tagName);
+
+
+      if (isOpen) {
+        if (!menuElem) {
+          console.log(isOpen);
           handlerMenu();
-          menu.removeEventListener('click', searchCloseElement);
+          isOpen = false;
+          return;
         }
       };
 
-    btnMenu.addEventListener('click', () => {
-      menu.addEventListener('click', searchCloseElement);
-      handlerMenu();
+      if (close || li) {
+        handlerMenu();
+        isOpen = false;
+        return;
+      }
+
+      if (btn) {
+        handlerMenu();
+        isOpen = !isOpen;
+        return;
+      }
+
+
     });
   };
 
@@ -100,7 +124,7 @@ window.addEventListener('DOMContentLoaded', () => {
       if (document.documentElement.clientWidth >= 768) {
 
         counter += 5;
-        popupWindow.style.transform = `scale(${counter / 100})`;
+        popupWindow.style.transform = `scale(${counter/100})`;
 
         if (counter < 100) {
           setTimeout(appearAnimation.bind(this), 1);
@@ -424,5 +448,42 @@ window.addEventListener('DOMContentLoaded', () => {
   };
 
   calc();
+  //Плавная прокрутка
+
+  const scroll = () => {
+
+    let counter = document.documentElement.scrollTop;
+
+    const smoothScroll = (scrollTo) => {
+      const positionY = document.querySelector(scrollTo).offsetTop;
+      counter = document.documentElement.scrollTop;
+
+      counter += 10;
+      document.documentElement.scrollTop = counter;
+
+      if (counter < positionY) {
+        setTimeout(smoothScroll, 1, scrollTo);
+      }
+    };
+
+    document.addEventListener('click', (event) => {
+      let link = event.target.closest('a');
+      if (link) {
+        link = link.getAttribute('href');
+      }
+      if (link) {
+        if (link[0] === '#' &&
+          link !== '#close') {
+
+          event.preventDefault();
+          smoothScroll(link);
+
+        }
+      }
+    });
+
+  };
+
+  scroll();
 
 });
