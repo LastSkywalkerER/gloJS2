@@ -70,13 +70,13 @@ window.addEventListener('DOMContentLoaded', () => {
       menu.classList.toggle('active-menu');
     };
 
-    document.addEventListener('click', (event) => {
+    document.addEventListener('click', event => {
       const target = event.target;
 
       const btn = target.closest('.' + btnMenu.classList);
       const menuElem = target.closest(menu.tagName);
       const close = target.closest('.' + closeBtn.classList);
-      const li = target.closest(menuItem.tagName);
+      // const li = target.closest(menuItem.tagName);
 
 
       if (isOpen) {
@@ -88,7 +88,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
       };
 
-      if (close || li) {
+      if (close || target === menuItem) {
         handlerMenu();
         isOpen = false;
         return;
@@ -578,6 +578,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
     forms.forEach(form => {
       form.addEventListener('submit', event => {
+        const elementsForm = [...form.elements].filter(item => item.tagName.toLowerCase() !== 'button' && item.type !== 'button');
+        elementsForm.forEach(item => item.value = '');
+
         event.preventDefault();
         form.insertAdjacentElement('beforeend', statusMessage);
 
