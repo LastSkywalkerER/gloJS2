@@ -495,8 +495,68 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const form = document.getElementById('form1');
 
+    const statusMessageStyle = document.createElement('style');
+    statusMessageStyle.textContent = `
+    .sk-wave {
+      width: 6em;
+      height: 4em;
+      margin: auto;
+      text-align: center;
+      font-size: 1em;
+    }
+
+    .sk-wave .sk-rect {
+      background-color: #337ab7;
+      height: 100%;
+      width: 0.5em;
+      display: inline-block;
+      animation: sk-wave-stretch-delay 1.2s infinite ease-in-out;
+    }
+
+    .sk-wave .sk-rect-1 {
+      animation-delay: -1.2s;
+    }
+
+    .sk-wave .sk-rect-2 {
+      animation-delay: -1.1s;
+    }
+
+    .sk-wave .sk-rect-3 {
+      animation-delay: -1s;
+    }
+
+    .sk-wave .sk-rect-4 {
+      animation-delay: -0.9s;
+    }
+
+    .sk-wave .sk-rect-5 {
+      animation-delay: -0.8s;
+    }
+
+    @keyframes sk-wave-stretch-delay {
+      0%,
+      40%,
+      100% {
+        transform: scaleY(0.4);
+      }
+
+      20% {
+        transform: scaleY(1);
+      }
+    }
+    `;
+    document.head.append(statusMessageStyle);
+
     const statusMessage = document.createElement('div');
-    statusMessage.style.cssText = 'font-size: 2rem;';
+    statusMessage.classList.add('sk-wave');
+    statusMessage.innerHTML = `
+    <div class='sk-rect sk-rect-2'></div> 
+    <div class='sk-rect sk-rect-3'></div> 
+    <div class='sk-rect sk-rect-4'></div> 
+    <div class='sk-rect sk-rect-1'></div> 
+    <div class='sk-rect sk-rect-5'></div>
+    `;
+
 
     const postData = ((body, outputData, errorData) => {
       const request = new XMLHttpRequest();
@@ -518,7 +578,8 @@ window.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', event => {
       event.preventDefault();
       form.append(statusMessage);
-      statusMessage.textContent = loadMessage;
+
+      // statusMessage.textContent = loadMessage;
       const formData = new FormData(form);
       let body = {};
       formData.forEach((val, key) => {
@@ -526,6 +587,8 @@ window.addEventListener('DOMContentLoaded', () => {
       });
       postData(body, () => {
           statusMessage.textContent = successMesage;
+          statusMessage.classList.remove('sk-wave');
+          // statusMessage.remove();
         },
         error => {
           statusMessage.textContent = errorMessage;
