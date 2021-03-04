@@ -112,7 +112,7 @@ class Validator {
 }
 
 const validator = new Validator({
-  selector: '#form3',
+  selector: '.main-form',
   method: {
     'tel': [
       ['notEmpty'],
