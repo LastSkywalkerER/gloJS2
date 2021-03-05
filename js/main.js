@@ -493,8 +493,7 @@ window.addEventListener('DOMContentLoaded', () => {
       loadMessage = 'Загрузка...',
       successMesage = 'Спасибо! Мы скоро с вами свяжемся';
 
-    const forms = [...document.querySelectorAll('.main-form')];
-    forms.push(document.querySelector('.footer-form'));
+    const forms = [...document.querySelectorAll('form')];
 
     const statusMessageStyle = document.createElement('style');
     statusMessageStyle.textContent = `
@@ -549,14 +548,7 @@ window.addEventListener('DOMContentLoaded', () => {
     document.head.append(statusMessageStyle);
 
     const statusMessage = document.createElement('div');
-    statusMessage.classList.add('sk-wave');
-    statusMessage.innerHTML = `
-    <div class='sk-rect sk-rect-2'></div> 
-    <div class='sk-rect sk-rect-3'></div> 
-    <div class='sk-rect sk-rect-4'></div> 
-    <div class='sk-rect sk-rect-1'></div> 
-    <div class='sk-rect sk-rect-5'></div>
-    `;
+
 
 
     const postData = ((body, outputData, errorData) => {
@@ -580,8 +572,16 @@ window.addEventListener('DOMContentLoaded', () => {
       form.addEventListener('submit', event => {
         const elementsForm = [...form.elements].filter(item => item.tagName.toLowerCase() !== 'button' && item.type !== 'button');
         elementsForm.forEach(item => item.value = '');
-
         event.preventDefault();
+
+        statusMessage.classList.add('sk-wave');
+        statusMessage.innerHTML = `
+        <div class='sk-rect sk-rect-2'></div> 
+        <div class='sk-rect sk-rect-3'></div> 
+        <div class='sk-rect sk-rect-4'></div> 
+        <div class='sk-rect sk-rect-1'></div> 
+        <div class='sk-rect sk-rect-5'></div>
+        `;
         form.insertAdjacentElement('beforeend', statusMessage);
 
         // statusMessage.textContent = loadMessage;
@@ -592,6 +592,7 @@ window.addEventListener('DOMContentLoaded', () => {
         });
         postData(body, () => {
             statusMessage.textContent = successMesage;
+            statusMessage.style.color = 'white';
             statusMessage.classList.remove('sk-wave');
             // statusMessage.remove();
           },

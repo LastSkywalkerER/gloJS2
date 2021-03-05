@@ -1,5 +1,6 @@
 /* eslint-disable eol-last */
 /* eslint-disable max-len */
+
 class Validator {
   constructor({
     selector,
@@ -10,21 +11,28 @@ class Validator {
     this.pattern = pattern;
     this.method = method;
     this.elementsForm = [...this.form.elements].filter(item => item.tagName.toLowerCase() !== 'button' && item.type !== 'button');
+    this.submitBtn = [...this.form.querySelectorAll('button')].reduce((accumulator, currentValue) => {
+      if (currentValue.type === 'submit') {
+        return currentValue;
+      }
+    });
     this.error = new Set();
-
+    this.form.setAttribute('novalidate', '');
+    this.submitBtn.setAttribute('disabled', '');
   }
 
   init() {
     this.applyStyle();
     this.setPattern();
-    this.elementsForm.forEach(elem => elem.addEventListener('change', this.checkIt.bind(this)));
+    this.elementsForm.forEach(elem => elem.addEventListener('input', this.checkIt.bind(this)));
     this.form.addEventListener('submit', e => {
       this.elementsForm.forEach(elem => this.checkIt({
         target: elem
       }));
+      e.preventDefault();
 
       if (this.error.size) {
-        e.preventDefault();
+        this.form.querySelector('button').setAttribute('disabled', '');
       }
     });
   }
@@ -38,13 +46,14 @@ class Validator {
         return true;
       },
       pattern(elem, pattern) {
-        return pattern.test(elem.value);
+        return validatorMethod.notEmpty(elem) ? pattern.test(elem.value) : true;
       }
     };
 
     if (this.method) {
       const method = this.method[elem.type];
       if (method) {
+
         return method.every(item => validatorMethod[item[0]](elem, this.pattern[item[1]]));
       }
     }
@@ -53,15 +62,21 @@ class Validator {
   }
 
   checkIt(event) {
-    const target = event.target;
-    if (this.isValid(target)) {
-      this.showSuccess(target);
-      this.error.delete(target);
-    } else {
-      this.showError(target);
-      this.error.add(target);
-    }
-
+    this.elementsForm.forEach(target => {
+      if (this.isValid(target)) {
+        this.showSuccess(target);
+        this.error.delete(target);
+        if (!this.error.size) {
+          this.form.querySelector('button').removeAttribute('disabled', '');
+        }
+      } else {
+        this.showError(target);
+        this.error.add(target);
+        if (this.error.size) {
+          this.form.querySelector('button').setAttribute('disabled', '');
+        }
+      }
+    });
   }
 
   showError(elem) {
@@ -106,13 +121,13 @@ class Validator {
       this.pattern.phone = /.{17}/;
     }
     if (!this.pattern.email) {
-      this.pattern.email = /(^\w+@\w+\.\w{2,}$)?/;
+      this.pattern.email = /^\w+@\w+\.\w{2,}$/;
     }
   }
 }
 
-const validator = new Validator({
-  selector: '.main-form',
+const validator1 = new Validator({
+  selector: '#form1',
   method: {
     'tel': [
       ['notEmpty'],
@@ -127,4 +142,40 @@ const validator = new Validator({
   }
 });
 
-validator.init();
+validator1.init();
+
+const validator2 = new Validator({
+  selector: '#form2',
+  method: {
+    'tel': [
+      ['notEmpty'],
+      ['pattern', 'phone']
+    ],
+    'email': [
+      ['pattern', 'email']
+    ],
+    'text': [
+      ['notEmpty']
+    ]
+  }
+});
+
+validator2.init();
+
+const validator3 = new Validator({
+  selector: '#form3',
+  method: {
+    'tel': [
+      ['notEmpty'],
+      ['pattern', 'phone']
+    ],
+    'email': [
+      ['pattern', 'email']
+    ],
+    'text': [
+      ['notEmpty']
+    ]
+  }
+});
+
+validator3.init();
