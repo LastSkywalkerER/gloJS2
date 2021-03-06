@@ -571,7 +571,7 @@ window.addEventListener('DOMContentLoaded', () => {
     forms.forEach(form => {
       form.addEventListener('submit', event => {
         const elementsForm = [...form.elements].filter(item => item.tagName.toLowerCase() !== 'button' && item.type !== 'button');
-        elementsForm.forEach(item => item.value = '');
+
         const submitBtn = [...form.querySelectorAll('button')].reduce((accumulator, currentValue) => {
           if (currentValue.type === 'submit') {
             return currentValue;
@@ -592,11 +592,14 @@ window.addEventListener('DOMContentLoaded', () => {
         form.insertAdjacentElement('beforeend', statusMessage);
 
         // statusMessage.textContent = loadMessage;
-        const formData = new FormData(form);
+        const formData = new Map();
+        elementsForm.forEach(item => formData.set(item.name, item.value));
+
         const body = {};
         formData.forEach((val, key) => {
           body[key] = val;
         });
+        console.log(body);
         postData(body, () => {
             statusMessage.textContent = successMesage;
             statusMessage.style.color = 'white';
@@ -608,6 +611,7 @@ window.addEventListener('DOMContentLoaded', () => {
             console.error(error);
           }
         );
+        elementsForm.forEach(item => item.value = '');
       });
     });
 
