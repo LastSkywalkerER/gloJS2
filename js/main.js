@@ -572,6 +572,13 @@ window.addEventListener('DOMContentLoaded', () => {
       form.addEventListener('submit', event => {
         const elementsForm = [...form.elements].filter(item => item.tagName.toLowerCase() !== 'button' && item.type !== 'button');
         elementsForm.forEach(item => item.value = '');
+        const submitBtn = [...form.querySelectorAll('button')].reduce((accumulator, currentValue) => {
+          if (currentValue.type === 'submit') {
+            return currentValue;
+          }
+        });
+        submitBtn.setAttribute('disabled', '');
+
         event.preventDefault();
 
         statusMessage.classList.add('sk-wave');

@@ -32,7 +32,7 @@ class Validator {
       e.preventDefault();
 
       if (this.error.size) {
-        this.form.querySelector('button').setAttribute('disabled', '');
+        this.submitBtn.setAttribute('disabled', '');
       }
     });
   }
@@ -134,6 +134,7 @@ const validator1 = new Validator({
       ['pattern', 'phone']
     ],
     'email': [
+      ['notEmpty'],
       ['pattern', 'email']
     ],
     'text': [
@@ -152,6 +153,7 @@ const validator2 = new Validator({
       ['pattern', 'phone']
     ],
     'email': [
+      ['notEmpty'],
       ['pattern', 'email']
     ],
     'text': [
@@ -170,6 +172,7 @@ const validator3 = new Validator({
       ['pattern', 'phone']
     ],
     'email': [
+      ['notEmpty'],
       ['pattern', 'email']
     ],
     'text': [
