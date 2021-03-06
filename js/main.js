@@ -599,7 +599,7 @@ window.addEventListener('DOMContentLoaded', () => {
         formData.forEach((val, key) => {
           body[key] = val;
         });
-        console.log(body);
+
         postData(body, () => {
             statusMessage.textContent = successMesage;
             statusMessage.style.color = 'white';
