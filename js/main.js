@@ -490,13 +490,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const sendForm = () => {
     const errorMessage = 'Что-то пошло не так...',
-      loadMessage = 'Загрузка...',
       successMesage = 'Спасибо! Мы скоро с вами свяжемся';
-
     const forms = [...document.querySelectorAll('form')];
+    const statusMessage = document.createElement('div');
 
-    const statusMessageStyle = document.createElement('style');
-    statusMessageStyle.textContent = `
+    const setStyle = () => {
+      const statusMessageStyle = document.createElement('style');
+      statusMessageStyle.textContent = `
     .sk-wave {
       width: 6em;
       height: 4em;
@@ -545,13 +545,10 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     }
     `;
-    document.head.append(statusMessageStyle);
+      document.head.append(statusMessageStyle);
+    };
 
-    const statusMessage = document.createElement('div');
-
-
-
-    const postData = ((body, outputData, errorData) => {
+    const postData = body => new Promise((outputData, errorData) => {
       const request = new XMLHttpRequest();
       request.addEventListener('readystatechange', () => {
         if (request.readyState !== 4) {
@@ -568,53 +565,56 @@ window.addEventListener('DOMContentLoaded', () => {
       request.send(JSON.stringify(body));
     });
 
-    forms.forEach(form => {
-      form.addEventListener('submit', event => {
-        const elementsForm = [...form.elements].filter(item => item.tagName.toLowerCase() !== 'button' && item.type !== 'button');
+    const formPostAction = (event, form) => {
+      event.preventDefault();
 
-        const submitBtn = [...form.querySelectorAll('button')].reduce((accumulator, currentValue) => {
-          if (currentValue.type === 'submit') {
-            return currentValue;
-          }
-        });
-        submitBtn.setAttribute('disabled', '');
+      const elementsForm = [...form.elements].filter(item => item.tagName.toLowerCase() !== 'button' && item.type !== 'button');
+      const submitBtn = [...form.elements].reduce((accumulator, currentValue) => {
+        if (currentValue.type === 'submit') {
+          return currentValue;
+        }
+      });
 
-        event.preventDefault();
+      const formData = new Map();
+      elementsForm.forEach(item => formData.set(item.name, item.value));
+      const body = {};
+      formData.forEach((val, key) => {
+        body[key] = val;
+      });
 
-        statusMessage.classList.add('sk-wave');
-        statusMessage.innerHTML = `
+      submitBtn.setAttribute('disabled', '');
+      elementsForm.forEach(item => item.value = '');
+
+      statusMessage.classList.add('sk-wave');
+      statusMessage.innerHTML = `
         <div class='sk-rect sk-rect-2'></div> 
         <div class='sk-rect sk-rect-3'></div> 
         <div class='sk-rect sk-rect-4'></div> 
         <div class='sk-rect sk-rect-1'></div> 
         <div class='sk-rect sk-rect-5'></div>
         `;
-        form.insertAdjacentElement('beforeend', statusMessage);
+      form.insertAdjacentElement('beforeend', statusMessage);
 
-        // statusMessage.textContent = loadMessage;
-        const formData = new Map();
-        elementsForm.forEach(item => formData.set(item.name, item.value));
+      // statusMessage.textContent = loadMessage;
 
-        const body = {};
-        formData.forEach((val, key) => {
-          body[key] = val;
-        });
+      postData(body).then(() => {
+        statusMessage.textContent = successMesage;
+        statusMessage.style.color = 'white';
+        statusMessage.classList.remove('sk-wave');
+        // statusMessage.remove();
+      }).catch(error => {
+        statusMessage.textContent = errorMessage;
+        console.error(error);
+      });
+    };
 
-        postData(body, () => {
-            statusMessage.textContent = successMesage;
-            statusMessage.style.color = 'white';
-            statusMessage.classList.remove('sk-wave');
-            // statusMessage.remove();
-          },
-          error => {
-            statusMessage.textContent = errorMessage;
-            console.error(error);
-          }
-        );
-        elementsForm.forEach(item => item.value = '');
+    forms.forEach(form => {
+      form.addEventListener('submit', event => {
+        formPostAction(event, form);
       });
     });
 
+    setStyle();
   };
 
   sendForm();
