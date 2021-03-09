@@ -548,21 +548,12 @@ window.addEventListener('DOMContentLoaded', () => {
       document.head.append(statusMessageStyle);
     };
 
-    const postData = body => new Promise((outputData, errorData) => {
-      const request = new XMLHttpRequest();
-      request.addEventListener('readystatechange', () => {
-        if (request.readyState !== 4) {
-          return;
-        }
-        if (request.status === 200) {
-          outputData();
-        } else {
-          errorData(request.status);
-        }
-      });
-      request.open('POST', './server.php');
-      request.setRequestHeader('Content-Type', 'application/json');
-      request.send(JSON.stringify(body));
+    const postData = body => fetch('./server.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify(body),
     });
 
     const formPostAction = (event, form) => {
@@ -595,13 +586,14 @@ window.addEventListener('DOMContentLoaded', () => {
         `;
       form.insertAdjacentElement('beforeend', statusMessage);
 
-      // statusMessage.textContent = loadMessage;
-
-      postData(body).then(() => {
-        statusMessage.textContent = successMesage;
-        statusMessage.style.color = 'white';
-        statusMessage.classList.remove('sk-wave');
-        // statusMessage.remove();
+      postData(body).then(request => {
+        if (request.status === 200) {
+          statusMessage.textContent = successMesage;
+          statusMessage.style.color = 'white';
+          statusMessage.classList.remove('sk-wave');
+        } else {
+          throw new Error(`Exception status ${request.status}`);
+        }
       }).catch(error => {
         statusMessage.textContent = errorMessage;
         console.error(error);
