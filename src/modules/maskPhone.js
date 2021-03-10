@@ -36,6 +36,4 @@ function maskPhone(selector, masked = '+7 (___) ___-__-__') {
 
 }
 
-// use
-
-maskPhone('.form-phone');
+export default maskPhone;
