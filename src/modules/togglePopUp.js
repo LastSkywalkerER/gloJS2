@@ -1,23 +1,24 @@
 const togglePopUp = () => {
   const popup = document.querySelector('.popup'),
     popupBtn = document.querySelectorAll('.popup-btn'),
-    popUpClose = document.querySelector('.popup-close');
+    popUpClose = document.querySelector('.popup-close'),
+    popupForm = popup.querySelector('form'),
+    popupWindow = popup.querySelector('div');
 
   let counter = 0;
 
   function appearAnimation() {
-    const popupWindow = this.querySelector('div');
 
-    this.style.display = 'block';
+    popup.style.display = 'block';
     popupWindow.style.transform = 'scale(0)';
 
     if (document.documentElement.clientWidth >= 768) {
 
-      counter += 5;
-      popupWindow.style.transform = `scale(${counter/100})`;
+      counter += 10;
+      popupWindow.style.transform = `scale(${counter / 100})`;
 
-      if (counter < 100) {
-        setTimeout(appearAnimation.bind(this), 1);
+      if (counter <= 100) {
+        requestAnimationFrame(appearAnimation);
       }
 
     } else {
@@ -33,7 +34,9 @@ const togglePopUp = () => {
   }
 
   popupBtn.forEach(element => {
-    element.addEventListener('click', appearAnimation.bind(popup));
+    element.addEventListener('click', () => {
+      requestAnimationFrame(appearAnimation);
+    });
   });
 
   popup.addEventListener('click', event => {
@@ -41,6 +44,8 @@ const togglePopUp = () => {
       disappearAnimation();
     }
   });
+
+  popupForm.addEventListener('submit', disappearAnimation);
 
 };
 

@@ -101,6 +101,9 @@ const sendForm = () => {
         statusMessage.textContent = successMesage;
         statusMessage.style.color = 'white';
         statusMessage.classList.remove('sk-wave');
+        setTimeout(() => {
+          statusMessage.remove();
+        }, 3000);
       } else {
         throw new Error(`Exception status ${request.status}`);
       }
