@@ -139,6 +139,15 @@ class CarouselSlider {
   controlSlider() {
     this.prev.addEventListener('click', this.prevSlider.bind(this));
     this.next.addEventListener('click', this.nextSlider.bind(this));
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'ArrowRight') {
+        this.nextSlider();
+      }
+      if (event.key === 'ArrowLeft') {
+        this.prevSlider();
+      }
+    });
   }
 
   moveSlides() {
