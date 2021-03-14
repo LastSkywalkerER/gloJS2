@@ -1,5 +1,6 @@
 // подключение модулей
 import calc from './modules/calc';
+import CarouselSlider from './modules/carouselSlider';
 import changeImage from './modules/changeImage';
 import countTimer from './modules/countTimer';
 import maskPhone from './modules/maskPhone';
@@ -110,5 +111,26 @@ window.addEventListener('DOMContentLoaded', () => {
   // отпарвка на сервер
   sendForm();
 
+  // слайдер карусель
+  const carouselSlider = new CarouselSlider({
+    main: '.companies-wrapper',
+    wrap: '.companies-hor',
+    slidesToShow: 4,
+    infinity: true,
+    responsive: [{
+        breackpoint: 1024,
+        slidesToShow: 3
+      },
+      {
+        breackpoint: 768,
+        slidesToShow: 2
+      },
+      {
+        breackpoint: 576,
+        slidesToShow: 1
+      }
+    ]
+  });
+  carouselSlider.init();
 
 });
