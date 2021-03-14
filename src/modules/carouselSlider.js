@@ -24,7 +24,7 @@ class CarouselSlider {
     try {
       this.main = document.querySelector(main);
       this.wrap = document.querySelector(wrap);
-      this.slides = document.querySelector(wrap).children;
+      this.slides = [...document.querySelector(wrap).children];
     } catch {
       console.warn('CarouselSlider: optins "main" and "wrap" are required!');
       this.init = () => {};
@@ -46,9 +46,13 @@ class CarouselSlider {
     this.addGloClass();
     this.addStyle();
 
-    // if (this.options.infinity ) {
-    //   addMoreSlides();
-    // }
+    if (this.responsive) {
+      this.responseInit();
+    }
+
+    if (this.options.infinity) {
+      this.addMoreSlides();
+    }
 
     if (this.prev && this.next) {
       this.controlSlider();
@@ -57,12 +61,22 @@ class CarouselSlider {
       this.controlSlider();
     }
 
-    if (this.responsive) {
-      this.responseInit();
-    }
   }
 
   addMoreSlides() {
+    this.clonedSlides = [];
+    this.clonedSlides.push(this.slides.map(element => element.cloneNode(true)));
+    this.clonedSlides.push(this.slides);
+    this.clonedSlides.push(this.slides.map(element => element.cloneNode(true)));
+
+    this.rerenderSlides();
+  }
+
+  rerenderSlides() {
+    this.options.position += this.slides.length;
+    this.moveSlides();
+
+    this.clonedSlides.forEach(slides => slides.forEach(slide => this.wrap.append(slide)));
 
   }
 
@@ -75,20 +89,22 @@ class CarouselSlider {
   }
 
   addStyle() {
-    let style = document.getElementById('sliderCarousel-style');
-    if (!style) {
-      style = document.createElement('style');
-      style.id = 'sliderCarousel-style';
+    this.style = document.getElementById('sliderCarousel-style');
+    if (!this.style) {
+      this.style = document.createElement('style');
+      this.style.id = 'sliderCarousel-style';
     }
 
-    style.textContent = `
+    this.style.textContent = `
     .glo-slider {
       overflow: hidden !important;
+      position: relative;
     }
     .glo-slider__wrap {
       display: flex !important;
       transition: transform 0.5s !important;
       will-change: transform !important;
+      margin: 0 !important;
     }
 
     .glo-slider__item {
@@ -97,7 +113,27 @@ class CarouselSlider {
     }
     `;
 
-    document.head.append(style);
+    document.head.append(this.style);
+  }
+
+  disableAnimation() {
+    this.style.textContent = `
+    .glo-slider {
+      overflow: hidden !important;
+      position: relative;
+    }
+    .glo-slider__wrap {
+      display: flex !important;
+      margin: 0 !important;
+    }
+
+    .glo-slider__item {
+      flex: 0 0 ${this.options.widthSlide}% !important;
+      margin: auto 0 !important;
+    }
+    `;
+
+    document.head.append(this.style);
   }
 
   controlSlider() {
@@ -105,24 +141,40 @@ class CarouselSlider {
     this.next.addEventListener('click', this.nextSlider.bind(this));
   }
 
+  moveSlides() {
+    this.wrap.style.transform = `translateX(${-this.options.position * this.options.widthSlide}%)`;
+  }
+
   prevSlider() {
-    if (this.options.infinity || this.options.position > 0) {
-      --this.options.position;
-      if (this.options.position < 0) {
-        this.options.position = this.options.maxPosition;
-      }
-      this.wrap.style.transform = `translateX(-${this.options.position * this.options.widthSlide}%)`;
+    if (this.options.infinity && this.options.position < this.slides.length / 2) {
+      this.disableAnimation();
+      this.options.position += this.slides.length;
+      this.moveSlides();
     }
+    if (this.options.infinity || this.options.position > 0) {
+      setTimeout(() => {
+        this.addStyle();
+        --this.options.position;
+        this.moveSlides();
+      }, 5);
+    }
+
   }
 
   nextSlider() {
-    if (this.options.infinity || this.options.position < this.options.maxPosition) {
-      ++this.options.position;
-      if (this.options.position > this.options.maxPosition) {
-        this.options.position = 0;
-      }
-      this.wrap.style.transform = `translateX(-${this.options.position * this.options.widthSlide}%)`;
+    if (this.options.infinity && this.options.position > this.slides.length * 2.5 - 1) {
+      this.disableAnimation();
+      this.options.position -= this.slides.length;
+      this.moveSlides();
     }
+    if (this.options.infinity || this.options.position < this.options.maxPosition) {
+      setTimeout(() => {
+        this.addStyle();
+        ++this.options.position;
+        this.moveSlides();
+      }, 5);
+    }
+
   }
 
   addArrow() {
@@ -142,14 +194,21 @@ class CarouselSlider {
         margin: 0 10px;
         border: 20px solid transparent;
         background: transparent;
+        position: absolute;
+        top: 50%;
+        transform: translateY(50%);
       }
 
       .glo-slider__next {
         border-left-color: #19b5fe;
+        right: 0;
+        transform: translateX(50%);
       }
 
       .glo-slider__prev {
         border-right-color: #19b5fe;
+        left: 0;
+        transform: translateX(-50%);
       }
 
       .glo-slider__prev:hover,
